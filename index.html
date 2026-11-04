@@ -1,29 +1,82 @@
+
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image.prod.js"></script>
-    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-  </head>
-  <body style="margin:0; overflow:hidden;">
-    <a-scene
-      mindar-image="imageTargetSrc: ./targets.mind"
-      embedded
-      color-space="sRGB"
-      vr-mode-ui="enabled: false"
-      device-orientation-permission-ui="enabled: false">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-      <a-assets>
-        <img id="secret-image" src="./your-ar-image.png">
-      </a-assets>
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
 
-      <a-entity mindar-image-target="targetIndex: 0">
-        <a-image src="#secret-image" position="0 0 0" height="0.552" width="1"></a-image>
-      </a-entity>
+  <script>
+    AFRAME.registerComponent('target-debug', {
+      init: function () {
+        this.el.addEventListener('targetFound', () => {
+          console.log('SUCCESS: IMAGE TARGET FOUND');
+        });
 
-    </a-scene>
-  </body>
+        this.el.addEventListener('targetLost', () => {
+          console.log('WARNING: IMAGE TARGET LOST');
+        });
+      }
+    });
+  </script>
+</head>
+
+<body>
+
+  <a-scene
+    mindar-image="
+      imageTargetSrc: ./targets.mind;
+      maxTrack: 1;
+      warmupTolerance: 5;
+      missTolerance: 10;
+      filterMinCF: 0.0001;
+      filterBeta: 0.01;
+    "
+    embedded
+    color-space="sRGB"
+    renderer="colorManagement: true"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false"
+  >
+
+    <a-assets>
+      <img
+        id="secret-image"
+        src="./your-ar-image.png"
+        crossorigin="anonymous"
+      >
+    </a-assets>
+
+    <a-camera
+      position="0 0 0"
+      look-controls="enabled: false">
+    </a-camera>
+
+    <a-entity
+      mindar-image-target="targetIndex: 0"
+      target-debug
+    >
+
+      <a-plane
+        src="#secret-image"
+        position="0 0 0.01"
+        width="1"
+        height="0.552"
+        material="transparent: true; shader: flat"
+      >
+      </a-plane>
+
+    </a-entity>
+
+  </a-scene>
+
+</body>
 </html>
