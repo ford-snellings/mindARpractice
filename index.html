@@ -71,12 +71,14 @@
   <script>
     const target = document.querySelector("#target");
     const arImage = document.querySelector("#ar-image");
+    const overlay = document.querySelector("#overlay");
 
     // Detect when image is first recognized
     target.addEventListener("targetFound", function() {
 
       // Make AR image visible
       arImage.setAttribute("visible", true);
+      overlay..style.display = "none";
 
     });
   </script>
